@@ -1,0 +1,85 @@
+openapi: '3.0.2'
+
+info:
+  title: Expenses API 
+  version: '1.0'
+  description: AWS SAM Demo - Expenses API
+
+tags:
+  - name: Expenses
+
+paths:
+  /expense:
+    get:
+      summary: Get expenses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array 
+                items:
+                  $ref: '#/components/schemas/Expense'
+      tags: 
+        - Expenses
+
+    post:
+      summary: Create an expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddExpense'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+      tags: 
+        - Expenses
+
+  /expense/{id}:
+    get:
+      summary: Get an expense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+      tags: 
+        - Expenses
+
+components:
+  schemas:
+    AddExpense: 
+      type: object
+      required:
+        - amount
+        - description
+        - date
+      properties:
+        amount:
+          type: number
+        description:
+          type: string
+        date:
+          type: string
+    Expense:
+      allOf:
+        - $ref: '#/components/schemas/AddExpense'
+        - type: object
+          properties:
+            id:
+              type: string

@@ -1,0 +1,255 @@
+openapi: 3.0.2
+
+info:
+  title: Expenses API
+  version: '1.0'
+  description: AWS SAM Demo - Expenses API
+
+tags:
+  - name: Expenses
+
+paths:
+  /expense:
+    get:
+      summary: Get expenses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+      tags:
+        - Expenses
+      security:
+        - CognitoAuth: []
+
+    post:
+      summary: Create an expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddExpense'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+      tags:
+        - Expenses
+      security:
+        - CognitoAuth: []
+
+  /expense/{id}:
+    get:
+      summary: Get an expense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+      tags:
+        - Expenses
+      security:
+        - CognitoAuth: []
+
+  /expense/{id}/approve:
+    post:
+      summary: Approve an expense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Expenses
+      security:
+        - CognitoAuth: []
+
+  /expense/{id}/reject:
+    post:
+      summary: Reject an expense
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Expenses
+      security:
+        - CognitoAuth: []
+
+  /employee:
+    get:
+      summary: Get employees
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+      tags:
+        - Employee
+      security:
+        - CognitoAuth: []
+    post:
+      summary: Create an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddEmployee'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+      tags:
+        - Employee
+      security:
+        - CognitoAuth: []
+
+  /employee/{id}:
+    get:
+      summary: Get an employee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+      tags:
+        - Employee
+      security:
+        - CognitoAuth: []
+
+  /employee/byRole/{roleName}:
+    get:
+      summary: Get an employee
+      parameters:
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - manager
+              - employee
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+      tags:
+        - Employee
+      security:
+        - CognitoAuth: []
+
+components:
+  securitySchemes:
+    CognitoAuth:
+      # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AddExpense:
+      type: object
+      required:
+        - amount
+        - description
+        - date
+        - requestedBy
+      properties:
+        amount:
+          type: number
+        description:
+          type: string
+        date:
+          type: string
+        requestedBy:
+          type: string
+          format: email
+    Expense:
+      allOf:
+        - $ref: '#/components/schemas/AddExpense'
+        - type: object
+          properties:
+            id:
+              type: string
+            requestedBy:
+              type: string
+              format: email
+            manager:
+              type: string
+              format: email
+            status:
+              type: string
+              enum:
+                - submitted
+                - approved
+                - rejected
+    AddEmployee:
+      type: object
+      required:
+        - givenName
+        - familyName
+        - roleName
+        - email
+      properties:
+        givenName:
+          type: string
+        familyName:
+          type: string
+        email:
+          type: string
+          format: email
+        roleName:
+          type: string
+          enum:
+            - manager
+            - employee
+    Employee:
+      allOf:
+        - $ref: '#/components/schemas/AddEmployee'
+        - type: object
+          properties:
+            id:
+              type: string

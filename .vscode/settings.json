@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/05-aws-http-api-kinesis/shared",
+    ]
+}

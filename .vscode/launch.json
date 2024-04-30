@@ -1,0 +1,38 @@
+{
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "api:main.handler (python3.9)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/05-aws-http-api-kinesis/api",
+                "lambdaHandler": "main.handler"
+            },
+            "lambda": {
+                "runtime": "python3.9",
+                "payload": {
+                    "json": {
+                        "routeKey": "GET /expense/{id}",
+                        "requestContext": {
+                            "http": {
+                                "method": "GET",
+                            },    
+                        },
+                        "pathParameters": {
+                            "id": "325c780a-8abf-40b4-a921-1fd3ad11e200"
+                        }
+                    }
+                },
+                "environmentVariables": {},
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}/05-aws-http-api-kinesis/shared/",
+                        "remoteRoot": "/"
+                    }
+                ]
+            
+            }
+        }
+    ]
+}
